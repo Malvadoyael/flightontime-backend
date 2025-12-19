@@ -1,29 +1,23 @@
 package com.flightontime.backend;
 
 import com.flightontime.backend.model.Flight;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.flightontime.backend.service.FlightService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1")
 public class StatusController {
 
-    @GetMapping("/status")
-    public String checkStatus() {
-        return "✈️ FlightOnTime Backend: ¡Sistemas listos y despegando!";
-    }
+    @Autowired
+    private FlightService flightService;
 
-    @GetMapping("/test-flight")
-    public Flight getTestFlight() {
-        return new Flight(
-            "MX123", 
-            "Aeromexico", 
-            "MEX", 
-            "CUN", 
-            LocalDateTime.now(), 
-            0.15
-        );
+    // Cambiamos a POST para que TÚ le envíes los datos del vuelo
+    @PostMapping("/predict")
+    public Flight getPrediction(@RequestBody Flight flight) {
+        return flightService.predictDelay(flight);
     }
 }
