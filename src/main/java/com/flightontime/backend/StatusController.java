@@ -2,6 +2,9 @@ package com.flightontime.backend;
 
 import com.flightontime.backend.model.Flight;
 import com.flightontime.backend.service.FlightService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,5 +22,10 @@ public class StatusController {
     @PostMapping("/predict")
     public Flight getPrediction(@RequestBody Flight flight) {
         return flightService.predictDelay(flight);
+    }
+
+    @PostMapping("/originList")
+    public List<Flight> originList() {
+        return flightService.originList();
     }
 }
