@@ -15,8 +15,13 @@ public class FlightService {
     private static final Logger logger = LoggerFactory.getLogger(FlightService.class);
 
     /**
-     * Este método simula lo que hará tu modelo de Data Science.
-     * Por ahora, genera una probabilidad basada en reglas lógicas simples.
+     * Simula un modelo que estima la probabilidad de retraso para un vuelo.
+     * Genera una probabilidad base y la ajusta según reglas simples (por
+     * ejemplo, destino "MEX" aumenta la probabilidad) y un factor aleatorio.
+     *
+     * @param flight objeto `Flight` con los datos de entrada (origen,
+     *               destino, etc.)
+     * @return el mismo `Flight` con `delayProbability` actualizado
      */
     public Flight predictDelay(Flight flight) {
         logger.info("Calculando prediccion para el vuelo: {}", flight.getFlightNumber());
@@ -37,6 +42,12 @@ public class FlightService {
         return flight;
     }
 
+    /**
+     * Devuelve una lista de vuelos de ejemplo utilizada por la API.
+     * Los vuelos son instancias creadas en memoria para propósitos de demo.
+     *
+     * @return lista de vuelos de ejemplo
+     */
     public List<Flight> originList() {
         List<Flight> flights = new ArrayList<>();
         flights.add(new Flight(1L, "AM123", "Aeroméxico", "MEX", "JFK", LocalDateTime.now().plusHours(4), 0.1));

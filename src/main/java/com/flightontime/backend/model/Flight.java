@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA que representa un vuelo con datos básicos y la probabilidad de
+ * retraso.
+ */
 @Data
 @Entity // Esto le dice a JPA que cree una tabla llamada "Flight"
 @AllArgsConstructor
@@ -27,6 +31,11 @@ public class Flight {
     private Double delayProbability;
 
     @Override
+    /**
+     * Representación en texto del objeto `Flight`.
+     *
+     * @return cadena con los campos del vuelo
+     */
     public String toString() {
         return "Flight [id=" + id + ", flightNumber=" + flightNumber + ", airline=" + airline + ", origin=" + origin
                 + ", destination=" + destination + ", departureTime=" + departureTime + ", delayProbability="

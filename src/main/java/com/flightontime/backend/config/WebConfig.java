@@ -32,13 +32,16 @@ import org.springframework.lang.NonNull;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     * Configura las rutas CORS permitidas para la aplicación.
+     *
+     * @param registry registro de CORS proporcionado por Spring MVC
+     */
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**") // Apply to all endpoints
                 .allowedOrigins(
                         "http://localhost:5173", // Vite/React default
-                        // "http://localhost:3000", // React default
-                        // "http://localhost:4200", // Angular default
                         "http://localhost:8080" // Self
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
