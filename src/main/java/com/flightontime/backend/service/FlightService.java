@@ -6,16 +6,20 @@ import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class FlightService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FlightService.class);
 
     /**
      * Este método simula lo que hará tu modelo de Data Science.
      * Por ahora, genera una probabilidad basada en reglas lógicas simples.
      */
     public Flight predictDelay(Flight flight) {
-        System.out.println("Calculando prediccion para el vuelo: " + flight.getFlightNumber());
+        logger.info("Calculando prediccion para el vuelo: {}", flight.getFlightNumber());
         Random random = new Random();
         double baseProbability = 0.10; // 10% base
 
@@ -29,7 +33,7 @@ public class FlightService {
 
         flight.setDelayProbability(baseProbability + weatherFactor);
 
-        System.out.println("Resultado de la prediccion: " + flight);
+        logger.info("Resultado de la prediccion: {}", flight);
         return flight;
     }
 
@@ -41,10 +45,19 @@ public class FlightService {
         return flights;
     }
 
+    /**
+     * Lee el archivo de modelo 'modelo_vuelos.json' para verificar las
+     * características disponibles.
+     * Rellena el origen, destino y aerolínea del vuelo basándose en la lógica
+     * del modelo y valores por defecto.
+     *
+     * @param flight El objeto vuelo a procesar.
+     * @return El objeto vuelo con los datos actualizados.
+     */
     public Flight testingModelEdu(Flight flight) {
         try {
 
-            System.out.println("Flight: " + flight);
+            logger.info("Flight: {}", flight);
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             // Load the resource from classpath
             org.springframework.core.io.ClassPathResource resource = new org.springframework.core.io.ClassPathResource(
@@ -54,7 +67,7 @@ public class FlightService {
             // Extract feature_names
             com.fasterxml.jackson.databind.JsonNode learner = rootNode.path("learner");
             com.fasterxml.jackson.databind.JsonNode featureNames = learner.path("feature_names");
-            System.out.println("Feature names: " + featureNames);
+            logger.info("Feature names: {}", featureNames);
             if (featureNames.isArray()) {
                 boolean hasOrigin = false;
                 boolean hasDest = false;
@@ -88,7 +101,7 @@ public class FlightService {
             }
 
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            logger.error("Error reading model file", e);
             // Handle error appropriately, maybe log it
         }
         return flight;
