@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Flight {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Agregamos un ID único autoincremental
@@ -24,5 +24,13 @@ public class Flight {
     private String origin;
     private String destination;
     private LocalDateTime departureTime;
-    private Double delayProbability; 
+    private Double delayProbability;
+
+    @Override
+    public String toString() {
+        return "Flight [id=" + id + ", flightNumber=" + flightNumber + ", airline=" + airline + ", origin=" + origin
+                + ", destination=" + destination + ", departureTime=" + departureTime + ", delayProbability="
+                + delayProbability + "]";
+    }
+
 }
