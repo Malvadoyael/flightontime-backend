@@ -1,4 +1,4 @@
-package com.flightontime.backend;
+package com.flightontime.backend.controller;
 
 import com.flightontime.backend.model.Flight;
 import com.flightontime.backend.service.FlightService;
