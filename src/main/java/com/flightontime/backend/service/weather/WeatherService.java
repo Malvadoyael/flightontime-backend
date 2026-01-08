@@ -4,7 +4,6 @@ import com.flightontime.backend.model.weather.WeatherResponse;
 import com.flightontime.backend.model.weather.WeatherRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.sql.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,9 @@ public class WeatherService {
 
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.web.client.RestTemplate restTemplate;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.flightontime.backend.service.genai.GenAiService genAiService;
 
     public WeatherResponse processWeather(WeatherRequest request) {
         String latitude = request.getLatitude();
@@ -36,6 +38,22 @@ public class WeatherService {
             logger.info("Received Weather Request: {}", jsonString);
 
             WeatherResponse response = restTemplate.getForObject(url, WeatherResponse.class);
+
+            if (response != null) {
+                try {
+                    // Simple prompt construction
+                    String prompt = "Analiza los siguientes datos del clima para un vuelo el " + flightDate
+                            + " y determina si hay riesgo de retraso o cancelacion. Resume las condiciones en un párrafo corto. Datos: "
+                            + objectMapper.writeValueAsString(response.getHourly());
+
+                    String analysis = genAiService.generateContent(prompt);
+                    response.setAiAnalysis(analysis);
+                } catch (Exception e) {
+                    logger.error("Error generating AI analysis", e);
+                    response.setAiAnalysis("No se pudo generar el análisis de IA.");
+                }
+            }
+
             return response;
         } catch (JsonProcessingException e) {
             logger.error("Error processing weather request json", e);

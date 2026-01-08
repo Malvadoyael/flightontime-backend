@@ -21,6 +21,8 @@ public class WeatherResponse {
     private HourlyUnits hourlyUnits;
     private Hourly hourly;
 
+    private String aiAnalysis;
+
     @Data
     public static class HourlyUnits {
         private String time;
