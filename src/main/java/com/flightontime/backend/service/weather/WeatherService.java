@@ -4,6 +4,8 @@ import com.flightontime.backend.model.weather.WeatherResponse;
 import com.flightontime.backend.model.weather.WeatherRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.sql.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,14 @@ public class WeatherService {
     public WeatherResponse processWeather(WeatherRequest request) {
         String latitude = request.getLatitude();
         String longitude = request.getLongitude();
+        java.time.LocalDate flightDate = request.getFechaVuelo().toLocalDate();
+        String startDate = flightDate.minusDays(1).toString();
+        String endDate = flightDate.plusDays(1).toString();
 
         // Default or usage of hardcoded parameters as requested
         String url = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude
-                + "&hourly=temperature_2m,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover,weather_code&wind_speed_unit=kn&timezone=auto&start_date=2026-01-07&end_date=2026-01-13";
+                + "&hourly=temperature_2m,dew_point_2m,precipitation,weather_code,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,freezing_level_height,cloud_cover_low,snow_depth,cape&wind_speed_unit=kn&timezone=auto&start_date="
+                + startDate + "&end_date=" + endDate;
 
         try {
             String jsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
