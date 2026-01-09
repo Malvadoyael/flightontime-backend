@@ -4,11 +4,8 @@ import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
-<<<<<<< HEAD
 import jakarta.annotation.PostConstruct; // Asegúrate de tener esta dependencia o usar jakarta.annotation
-=======
-import javax.annotation.PostConstruct; // Asegúrate de tener esta dependencia o usar jakarta.annotation
->>>>>>> ffef73aef39bc50a21c824ba641d9aa1eea81435
+
 
 @Service
 public class GenAiService {
