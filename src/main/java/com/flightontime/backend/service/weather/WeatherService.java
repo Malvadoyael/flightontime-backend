@@ -21,6 +21,9 @@ public class WeatherService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.flightontime.backend.service.genai.GenAiService genAiService;
 
+    // Simple in-memory cache to avoid repeated API calls
+    private java.util.Map<String, String> analysisCache = new java.util.concurrent.ConcurrentHashMap<>();
+
     public WeatherResponse processWeather(WeatherRequest request) {
         String latitude = request.getLatitude();
         String longitude = request.getLongitude();
@@ -40,17 +43,29 @@ public class WeatherService {
             WeatherResponse response = restTemplate.getForObject(url, WeatherResponse.class);
 
             if (response != null) {
-                try {
-                    // Simple prompt construction
-                    String prompt = "Analiza los siguientes datos del clima para un vuelo el " + flightDate
-                            + " y determina si hay riesgo de retraso o cancelacion. Resume las condiciones en un párrafo corto. Datos: "
-                            + objectMapper.writeValueAsString(response.getHourly());
+                // Check cache
+                String cacheKey = latitude + "," + longitude + "," + flightDate.toString();
+                if (analysisCache.containsKey(cacheKey)) {
+                    logger.info("Using cached AI analysis for key: {}", cacheKey);
+                    response.setAiAnalysis(analysisCache.get(cacheKey));
+                } else {
+                    try {
+                        // Describe weather data in a summarized way to save tokens
+                        String weatherSummary = summarizeWeather(response.getHourly());
+                        String prompt = "Analiza los siguientes datos resumidos del clima para un vuelo el "
+                                + flightDate
+                                + " y determina si hay riesgo de retraso o cancelacion. Resume las condiciones en un párrafo corto.\n"
+                                + weatherSummary;
+                        // String prompt = "Di Hola soy un modelo de IA, dime tu nombre";
+                        String analysis = genAiService.generateContent(prompt);
+                        response.setAiAnalysis(analysis);
 
-                    String analysis = genAiService.generateContent(prompt);
-                    response.setAiAnalysis(analysis);
-                } catch (Exception e) {
-                    logger.error("Error generating AI analysis", e);
-                    response.setAiAnalysis("No se pudo generar el análisis de IA.");
+                        // Store in cache
+                        analysisCache.put(cacheKey, analysis);
+                    } catch (Exception e) {
+                        logger.error("Error generating AI analysis", e);
+                        response.setAiAnalysis("No se pudo generar el análisis de IA.");
+                    }
                 }
             }
 
@@ -62,5 +77,20 @@ public class WeatherService {
             logger.error("Error calling weather API", e);
             return null;
         }
+    }
+
+    private String summarizeWeather(WeatherResponse.Hourly hourly) {
+        if (hourly == null)
+            return "No hay datos detallados.";
+
+        // Calculate max values for risks
+        double maxWind = hourly.getWindSpeed10m().stream().mapToDouble(d -> d).max().orElse(0.0);
+        double maxGusts = hourly.getWindGusts10m().stream().mapToDouble(d -> d).max().orElse(0.0);
+        double minVisibility = hourly.getVisibility().stream().mapToDouble(d -> d).min().orElse(99999.0);
+        double maxPrecip = hourly.getPrecipitation().stream().mapToDouble(d -> d).max().orElse(0.0);
+
+        return String.format(
+                "Viento Máx: %.1f kn, Ráfagas Máx: %.1f kn, Visibilidad Mín: %.0f m, Precipitación Máx: %.1f mm",
+                maxWind, maxGusts, minVisibility, maxPrecip);
     }
 }

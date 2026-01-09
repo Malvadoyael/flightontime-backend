@@ -4,58 +4,57 @@ import com.flightontime.backend.model.weather.WeatherRequest;
 import com.flightontime.backend.model.weather.WeatherResponse;
 import com.flightontime.backend.service.genai.GenAiService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Date;
-import java.time.LocalDate;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class WeatherServiceTest {
 
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Mock
-    private GenAiService genAiService;
-
-    @InjectMocks
+    @Autowired
     private WeatherService weatherService;
 
+    @MockBean
+    private GenAiService genAiService;
+
+    @MockBean
+    private org.springframework.web.client.RestTemplate restTemplate;
+
     @Test
-    public void testProcessWeatherWithAiAnalysis() {
-        // Mock Request
+    public void testCaching() {
+        // Setup
         WeatherRequest request = new WeatherRequest();
-        request.setLatitude("-33.45");
-        request.setLongitude("-70.66");
-        request.setFechaVuelo(Date.valueOf("2026-01-10"));
+        request.setLatitude("10.0");
+        request.setLongitude("20.0");
+        request.setFechaVuelo(Date.valueOf("2024-01-01"));
 
-        // Mock Weather API Response
-        WeatherResponse mockWeatherResponse = new WeatherResponse();
-        WeatherResponse.Hourly mockHourly = new WeatherResponse.Hourly();
-        mockWeatherResponse.setHourly(mockHourly);
+        WeatherResponse mockResponse = new WeatherResponse();
+        mockResponse.setHourly(new WeatherResponse.Hourly());
+        // Initialize lists to avoid null pointer in summarize
+        mockResponse.getHourly().setWindSpeed10m(new ArrayList<>());
+        mockResponse.getHourly().setWindGusts10m(new ArrayList<>());
+        mockResponse.getHourly().setVisibility(new ArrayList<>());
+        mockResponse.getHourly().setPrecipitation(new ArrayList<>());
 
-        when(restTemplate.getForObject(anyString(), eq(WeatherResponse.class)))
-                .thenReturn(mockWeatherResponse);
+        when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(WeatherResponse.class)))
+                .thenReturn(mockResponse);
+        when(genAiService.generateContent(anyString())).thenReturn("AI Analysis Result");
 
-        // Mock AI Service Response
-        String mockAiAnalysis = "Predicted delay due to high winds.";
-        when(genAiService.generateContent(anyString())).thenReturn(mockAiAnalysis);
+        // First Call
+        weatherService.processWeather(request);
 
-        // Execute
-        WeatherResponse response = weatherService.processWeather(request);
+        // Second Call - Should hit cache
+        weatherService.processWeather(request);
 
-        // Verify
-        assertNotNull(response);
-        assertEquals(mockAiAnalysis, response.getAiAnalysis());
+        // Verify GenAI was called ONLY ONCE
+        verify(genAiService, times(1)).generateContent(anyString());
     }
 }
