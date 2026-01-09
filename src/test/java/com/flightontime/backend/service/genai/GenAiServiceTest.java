@@ -10,7 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GenAiServiceTest {
 
+<<<<<<< HEAD
      
+=======
+>>>>>>> ffef73aef39bc50a21c824ba641d9aa1eea81435
     @Autowired
     private GenAiService genAiService;
 

@@ -2,6 +2,10 @@ package com.flightontime.backend.service.genai;
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
+<<<<<<< HEAD
+=======
+import com.google.genai.types.ListModelsConfig;
+>>>>>>> ffef73aef39bc50a21c824ba641d9aa1eea81435
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +42,10 @@ public class SimpleGeminiService {
         }
 
         try {
+<<<<<<< HEAD
             // Pasamos null en config porque no lo necesitamos para una prueba simple
+=======
+>>>>>>> ffef73aef39bc50a21c824ba641d9aa1eea81435
             GenerateContentResponse response = client.models.generateContent(modelName, instruction, null);
             if (response != null) {
                 return response.text();
@@ -51,6 +58,7 @@ public class SimpleGeminiService {
         }
     }
 
+<<<<<<< HEAD
     // HEMOS SIMPLIFICADO ESTE MÉTODO PARA EVITAR ERRORES DE COMPILACIÓN
     public List<String> listModels() {
         List<String> modelNames = new ArrayList<>();
@@ -59,3 +67,31 @@ public class SimpleGeminiService {
         return modelNames;
     }
 }
+=======
+    public List<String> listModels() {
+        List<String> modelNames = new ArrayList<>();
+        modelNames.add("Attempting to list models...");
+        try {
+            // Using ListModelsConfig builder
+            ListModelsConfig config = ListModelsConfig.builder().build();
+
+            // Iterate over models. Note: client.models.list returns a Pager or Iterable
+            for (var model : client.models.list(config)) {
+                // Handling potential Optional return type or just String
+                Object nameObj = model.name();
+                String name = nameObj != null ? nameObj.toString() : "null";
+                modelNames.add(name);
+                logger.debug("Found model: {}", name);
+            }
+
+            if (modelNames.size() == 1) {
+                modelNames.add("No models found (list is empty).");
+            }
+        } catch (Exception e) {
+            logger.error("Error listing models", e);
+            modelNames.add("Error listing models: " + e.getMessage());
+        }
+        return modelNames;
+    }
+}
+>>>>>>> ffef73aef39bc50a21c824ba641d9aa1eea81435
