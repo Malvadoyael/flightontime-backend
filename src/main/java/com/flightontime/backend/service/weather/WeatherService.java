@@ -43,7 +43,7 @@ public class WeatherService {
         String startDate = flightDate.minusDays(1).toString();
         String endDate = flightDate.plusDays(1).toString();
 
-        String url = String.format(API_URL_TEMPLATE, latitude, longitude, startDate, endDate);
+        String url = String.format(API_URL_TEMPLATE, latitude, longitude, flightDate.toString(), endDate);
 
         // URL completa con los parámetros "Master Request" que definimos antes
         // String url = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude +
