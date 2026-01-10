@@ -2,13 +2,15 @@ package com.flightontime.backend.service.genai;
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.HttpOptions;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 // Cambiado de javax a jakarta para compatibilidad con Spring Boot 3
-import jakarta.annotation.PostConstruct; 
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +27,16 @@ public class SimpleGeminiService {
     @PostConstruct
     public void init() {
         try {
-            // Inicialización simplificada del cliente
-            this.client = Client.builder().apiKey(apiKey).build();
+            // Inicialización con HttpOptions para timeouts
+            HttpOptions httpOptions = HttpOptions.builder()
+
+                    .timeout((int) Duration.ofSeconds(120).toMillis())
+                    .build();
+
+            this.client = Client.builder()
+                    .apiKey(apiKey)
+                    .httpOptions(httpOptions)
+                    .build();
             logger.info("SimpleGeminiService initialized successfully.");
         } catch (Exception e) {
             logger.error("Error initializing SimpleGeminiService", e);
@@ -61,7 +71,7 @@ public class SimpleGeminiService {
         List<String> modelNames = new ArrayList<>();
         modelNames.add("Gemini 1.5 Flash (Sugerido)");
         modelNames.add("Gemini 1.5 Pro");
-        
+
         logger.info("Listing static model names to avoid library version conflicts.");
         return modelNames;
     }
