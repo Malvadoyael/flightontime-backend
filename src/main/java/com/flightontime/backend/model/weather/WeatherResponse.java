@@ -1,6 +1,8 @@
 package com.flightontime.backend.model.weather;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.Data;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class WeatherResponse {
     private HourlyUnits hourlyUnits;
     private Hourly hourly;
 
-    private String aiAnalysis;
+    private JsonNode aiAnalysis;
 
     @Data
     public static class HourlyUnits {
