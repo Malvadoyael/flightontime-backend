@@ -46,7 +46,7 @@ public class WeatherServiceTest {
 
         when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(WeatherResponse.class)))
                 .thenReturn(mockResponse);
-        when(genAiService.generateContent(anyString())).thenReturn("AI Analysis Result");
+        when(genAiService.generateContent(anyString())).thenReturn("{\"analisis_diario\": []}");
 
         // First Call
         weatherService.processWeather(request);
@@ -56,5 +56,45 @@ public class WeatherServiceTest {
 
         // Verify GenAI was called ONLY ONCE
         verify(genAiService, times(1)).generateContent(anyString());
+    }
+
+    @Test
+    public void testProcessWeatherReturnsFilteredResponse() {
+        // Setup
+        WeatherRequest request = new WeatherRequest();
+        String lat = "30.0";
+        String lon = "40.0";
+        Date date = Date.valueOf("2026-01-11");
+        request.setLatitude(lat);
+        request.setLongitude(lon);
+        request.setFechaVuelo(date);
+
+        WeatherResponse mockOpenMeteoResponse = new WeatherResponse();
+        mockOpenMeteoResponse.setHourly(new WeatherResponse.Hourly());
+        mockOpenMeteoResponse.getHourly().setWindSpeed10m(new ArrayList<>());
+
+        // Mock RestTemplate to return the full OpenMeteo response
+        when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(WeatherResponse.class)))
+                .thenReturn(mockOpenMeteoResponse);
+
+        // Mock GenAI
+        String aiJson = "{\"analisis_diario\": []}";
+        when(genAiService.generateContent(anyString())).thenReturn(aiJson);
+
+        // Execute
+        WeatherResponse finalResponse = weatherService.processWeather(request);
+
+        // Verify
+        // Check Request Fields are present
+        org.junit.jupiter.api.Assertions.assertEquals(lat, finalResponse.getRequestLatitude());
+        org.junit.jupiter.api.Assertions.assertEquals(lon, finalResponse.getRequestLongitude());
+        org.junit.jupiter.api.Assertions.assertEquals(date, finalResponse.getRequestFechaVuelo());
+
+        // Check AI Analysis is present
+        org.junit.jupiter.api.Assertions.assertNotNull(finalResponse.getAiAnalysis());
+
+        // Check OpenMeteo fields are NULL (because we created a new object)
+        org.junit.jupiter.api.Assertions.assertNull(finalResponse.getHourly());
+        org.junit.jupiter.api.Assertions.assertNull(finalResponse.getLatitude()); // Should be null in the new object
     }
 }

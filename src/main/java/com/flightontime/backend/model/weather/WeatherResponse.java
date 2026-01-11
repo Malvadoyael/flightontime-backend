@@ -1,13 +1,20 @@
 package com.flightontime.backend.model.weather;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.Data;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WeatherResponse {
+
+    private String requestLatitude;
+    private String requestLongitude;
+    @JsonProperty("request_fecha_vuelo")
+    private java.sql.Date requestFechaVuelo;
 
     private Double latitude;
     private Double longitude;

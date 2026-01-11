@@ -77,7 +77,14 @@ public class WeatherService {
                 generateAiAnalysis(response, flightDate, cacheKey);
             }
 
-            return response;
+            // Create a filtered response with only AI analysis and request data
+            WeatherResponse finalResponse = new WeatherResponse();
+            finalResponse.setAiAnalysis(response.getAiAnalysis());
+            finalResponse.setRequestLatitude(request.getLatitude());
+            finalResponse.setRequestLongitude(request.getLongitude());
+            finalResponse.setRequestFechaVuelo(request.getFechaVuelo());
+
+            return finalResponse;
         } catch (Exception e) {
             logger.error("Error al procesar la solicitud de clima", e);
             return null;
