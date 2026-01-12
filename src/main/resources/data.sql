@@ -313,3 +313,20 @@ INSERT INTO AIRPORT (iata, name, city, state, latitude, longitude) VALUES ('SLC'
 INSERT INTO AIRPORT (iata, name, city, state, latitude, longitude) VALUES ('SLN', 'Salina Regional', 'Salina', 'KS', 38790997, -97652197);
 INSERT INTO AIRPORT (iata, name, city, state, latitude, longitude) VALUES ('SMF', 'Sacramento International', 'Sacramento', 'CA', 38695422, -121590767);
 INSERT INTO AIRPORT (iata, name, city, state, latitude, longitude) VALUES ('SMX', 'Santa Maria Public', 'Santa Maria', 'CA', 34899250, -120457583);
+
+-- Carga de Aerolíneas
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('9E', 'Endeavor Air', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('AA', 'American Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('AS', 'Alaska Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('B6', 'JetBlue Airways', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('DL', 'Delta Air Lines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('F9', 'Frontier Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('G4', 'Allegiant Air', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('HA', 'Hawaiian Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('MQ', 'Envoy Air (operada como American Eagle)', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('NK', 'Spirit Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('OH', 'PSA Airlines (operada como American Eagle)', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('OO', 'SkyWest Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('UA', 'United Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('WN', 'Southwest Airlines', true);
+INSERT INTO AIRLINE (short_name, full_name, active) VALUES ('YX', 'Republic Airways', true);
