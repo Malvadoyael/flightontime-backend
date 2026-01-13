@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "flightontime-integration-test",
+		"name": "FlightOnTime Integration Tests",
+		"description": "Collection to test XGBoost Model Integration endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Test Model Integration",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"flightNumber\": \"TEST-100\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/test-model",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"test-model"
+					]
+				},
+				"description": "Sends a flight object to be processed by the XGBoost model integration logic."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Validate Terna IDs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"originId\": 10,\r\n    \"destId\": 20,\r\n    \"airlineId\": 30\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/validate-terna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"validate-terna"
+					]
+				},
+				"description": "Checks if the loaded model supports the Origin, Destination, and Airline features using 3 integer IDs."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Predict Delay Probability",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"flightNumber\": \"AM123\",\r\n    \"airline\": 1,\r\n    \"origin\": 1,\r\n    \"destination\": 1,\r\n    \"departureTime\": \"2025-12-01T14:30:00\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/predict",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"predict"
+					]
+				},
+				"description": "Calculates delay probability using Integer IDs."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Get Origin List",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/originList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"originList"
+					]
+				},
+				"description": "Returns a list of example flights."
+			},
+			"response": []
+		}
+	]
+}

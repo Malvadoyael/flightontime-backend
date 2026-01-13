@@ -24,9 +24,9 @@ public class Flight {
     private Long id; // Agregamos un ID único autoincremental
 
     private String flightNumber;
-    private String airline;
-    private String origin;
-    private String destination;
+    private Integer airline;
+    private Integer origin;
+    private Integer destination;
     private LocalDateTime departureTime;
     private Double delayProbability;
 
