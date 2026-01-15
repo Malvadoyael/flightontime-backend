@@ -1,6 +1,7 @@
 package com.flightontime.backend.controller;
 
 import com.flightontime.backend.model.Airline;
+import com.flightontime.backend.model.Airport;
 import com.flightontime.backend.model.Flight;
 import com.flightontime.backend.repository.AirlineRepository;
 import com.flightontime.backend.service.FlightService;
@@ -25,6 +26,8 @@ public class StatusController {
     private FlightService flightService;
     @Autowired
     private AirlineRepository airlineRepository;
+    @Autowired
+    private com.flightontime.backend.repository.AirportRepository airportRepository;
 
     // Cambiamos a POST para que TÚ le envíes los datos del vuelo
     @PostMapping("/predict")
@@ -82,6 +85,11 @@ public class StatusController {
 
     @PostMapping("/get-airline")
     public List<Airline> getAirline(@RequestBody AirlineRequest request) {
-        return airlineRepository.getAirlineByActive(request.active);
+        return airlineRepository.findByActive(Boolean.parseBoolean(request.getActive()));
+    }
+
+    @PostMapping("/get-airport")
+    public List<Airport> getAirport() {
+        return airportRepository.findAll();
     }
 }
