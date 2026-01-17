@@ -28,6 +28,8 @@ public class StatusController {
     private AirlineRepository airlineRepository;
     @Autowired
     private com.flightontime.backend.repository.AirportRepository airportRepository;
+    @Autowired
+    private com.flightontime.backend.repository.FlightMatchRepository flightMatchRepository;
 
     // Cambiamos a POST para que TÚ le envíes los datos del vuelo
     @PostMapping("/predict")
@@ -91,5 +93,23 @@ public class StatusController {
     @PostMapping("/get-airport")
     public List<Airport> getAirport() {
         return airportRepository.findAll();
+    }
+
+    @PostMapping("/get-destinoById")
+    public List<com.flightontime.backend.model.AirlineOriginProjection> getDestinationsByAirline(
+            @RequestBody DestinationRequest request) {
+        return flightMatchRepository.findDestinationsByAirlineId(request.getAirlineId());
+    }
+
+    public static class DestinationRequest {
+        private Integer airlineId;
+
+        public Integer getAirlineId() {
+            return airlineId;
+        }
+
+        public void setAirlineId(Integer airlineId) {
+            this.airlineId = airlineId;
+        }
     }
 }
