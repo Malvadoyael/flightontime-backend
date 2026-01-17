@@ -19,18 +19,39 @@ public class FlightMatch {
     private Integer destinoId;
 
     // Constructor vacío (obligatorio para JPA)
-    public FlightMatch() {}
+    public FlightMatch() {
+    }
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getAerolineaId() { return aerolineaId; }
-    public void setAerolineaId(Integer aerolineaId) { this.aerolineaId = aerolineaId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getOrigenId() { return origenId; }
-    public void setOrigenId(Integer origenId) { this.origenId = origenId; }
+    public Integer getAerolineaId() {
+        return aerolineaId;
+    }
 
-    public Integer getDestinoId() { return destinoId; }
-    public void setDestinoId(Integer destinoId) { this.destinoId = destinoId; }
+    public void setAerolineaId(Integer aerolineaId) {
+        this.aerolineaId = aerolineaId;
+    }
+
+    public Integer getOrigenId() {
+        return origenId;
+    }
+
+    public void setOrigenId(Integer origenId) {
+        this.origenId = origenId;
+    }
+
+    public Integer getDestinoId() {
+        return destinoId;
+    }
+
+    public void setDestinoId(Integer destinoId) {
+        this.destinoId = destinoId;
+    }
 }
