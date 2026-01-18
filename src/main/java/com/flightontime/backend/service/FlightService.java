@@ -54,9 +54,9 @@ public class FlightService {
         // IDs arbitrarios para demo:
         // MEX=1, JFK=2, IAH=3, CUN=4, MAD=5
         // Aeromexico=1, United=2, Iberia=3
-        flights.add(new Flight(1L, "AM123", 1, 1, 2, LocalDateTime.now().plusHours(4), 0.1));
-        flights.add(new Flight(2L, "UA456", 2, 3, 4, LocalDateTime.now().plusHours(2), 0.2));
-        flights.add(new Flight(3L, "IB789", 3, 5, 1, LocalDateTime.now().plusHours(10), 0.05));
+        flights.add(new Flight(1L, "AM123", 1, 1, 2, LocalDateTime.now().plusHours(4), 0.1, 0.0));
+        flights.add(new Flight(2L, "UA456", 2, 3, 4, LocalDateTime.now().plusHours(2), 0.2, 0.0));
+        flights.add(new Flight(3L, "IB789", 3, 5, 1, LocalDateTime.now().plusHours(10), 0.05, 0.0));
         return flights;
     }
 
@@ -153,5 +153,37 @@ public class FlightService {
             logger.error("Error validando terna IDs", e);
         }
         return false;
+    }
+
+    /**
+     * Calcula la distancia entre dos aeropuertos usando la fórmula de Haversine.
+     * 
+     * @param origin Aeropuerto de origen
+     * @param dest   Aeropuerto de destino
+     * @return Distancia en millas (aprox) o kilometros.
+     *         Para vuelos de USA a menudo se usa Millas.
+     *         Aquí devolvemos Millas para compatibilidad típica,
+     *         pero si el modelo usa Km, cambiar el radio.
+     */
+    public double calculateDistance(com.flightontime.backend.model.Airport origin,
+            com.flightontime.backend.model.Airport dest) {
+        if (origin == null || dest == null) {
+            return 1000.0; // Fallback default
+        }
+        // Radio Tierra en Millas = 3958.8
+        // Radio Tierra en Km = 6371
+        double earthRadius = 3958.8;
+
+        double dLat = Math.toRadians(dest.getLatitude() - origin.getLatitude());
+        double dLon = Math.toRadians(dest.getLongitude() - origin.getLongitude());
+
+        double lat1 = Math.toRadians(origin.getLatitude());
+        double lat2 = Math.toRadians(dest.getLatitude());
+
+        double a = Math.pow(Math.sin(dLat / 2), 2) +
+                Math.pow(Math.sin(dLon / 2), 2) *
+                        Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return earthRadius * c;
     }
 }

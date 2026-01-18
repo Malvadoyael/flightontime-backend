@@ -29,6 +29,7 @@ public class Flight {
     private Integer destination;
     private LocalDateTime departureTime;
     private Double delayProbability;
+    private Double distance;
 
     @Override
     /**
