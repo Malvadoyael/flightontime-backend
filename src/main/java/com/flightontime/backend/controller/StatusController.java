@@ -45,17 +45,6 @@ public class StatusController {
         return flightService.predictDelay(flight);
     }
 
-    @PostMapping("/originList")
-    /**
-     * Devuelve una lista de vuelos de ejemplo que representan orígenes
-     * disponibles.
-     *
-     * @return lista de `Flight` de ejemplo
-     */
-    public List<Flight> originList() {
-        return flightService.originList();
-    }
-
     @PostMapping("/test-model")
     /**
      * Endpoint para probar la integración con el modelo XGBoost.

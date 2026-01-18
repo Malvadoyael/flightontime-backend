@@ -44,23 +44,6 @@ public class FlightService {
     }
 
     /**
-     * Devuelve una lista de vuelos de ejemplo utilizada por la API.
-     * Los vuelos son instancias creadas en memoria para propósitos de demo.
-     *
-     * @return lista de vuelos de ejemplo
-     */
-    public List<Flight> originList() {
-        List<Flight> flights = new ArrayList<>();
-        // IDs arbitrarios para demo:
-        // MEX=1, JFK=2, IAH=3, CUN=4, MAD=5
-        // Aeromexico=1, United=2, Iberia=3
-        flights.add(new Flight(1L, "AM123", 1, 1, 2, LocalDateTime.now().plusHours(4), 0.1, 0.0));
-        flights.add(new Flight(2L, "UA456", 2, 3, 4, LocalDateTime.now().plusHours(2), 0.2, 0.0));
-        flights.add(new Flight(3L, "IB789", 3, 5, 1, LocalDateTime.now().plusHours(10), 0.05, 0.0));
-        return flights;
-    }
-
-    /**
      * Lee el archivo de modelo 'modelo_vuelos.json' para verificar las
      * características disponibles.
      * Rellena el origen, destino y aerolínea del vuelo basándose en la lógica
