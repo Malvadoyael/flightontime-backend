@@ -6,7 +6,7 @@ import com.flightontime.backend.service.genai.GenAiService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ public class WeatherServiceTest {
     @Autowired
     private WeatherService weatherService;
 
-    @MockBean
+    @MockitoBean
     private GenAiService genAiService;
 
-    @MockBean
+    @MockitoBean
     private org.springframework.web.client.RestTemplate restTemplate;
 
     @Test
