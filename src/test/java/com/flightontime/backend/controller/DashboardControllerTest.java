@@ -41,8 +41,10 @@ public class DashboardControllerTest {
                 .andExpect(jsonPath("$[0].periodo").value("2024-01"))
                 .andExpect(jsonPath("$[0].totalVuelos").value(100))
                 .andExpect(jsonPath("$[0].totalRetrasos").value(10))
+                .andExpect(jsonPath("$[0].porcentaje").value(10.0))
                 .andExpect(jsonPath("$[1].periodo").value("2024-02"))
                 .andExpect(jsonPath("$[1].totalVuelos").value(150))
-                .andExpect(jsonPath("$[1].totalRetrasos").value(20));
+                .andExpect(jsonPath("$[1].totalRetrasos").value(20))
+                .andExpect(jsonPath("$[1].porcentaje").value(13.333333333333334));
     }
 }
