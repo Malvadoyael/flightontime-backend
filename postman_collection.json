@@ -101,28 +101,6 @@
 				"description": "Calculates delay probability using Integer IDs."
 			},
 			"response": []
-		},
-		{
-			"name": "4. Get Origin List",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/originList",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"originList"
-					]
-				},
-				"description": "Returns a list of example flights."
-			},
-			"response": []
 		}
 	]
 }

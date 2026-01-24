@@ -14,16 +14,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Servicio para gestionar los datos de retrasos de vuelos.
+ * Carga datos desde un archivo JSON y proporciona consultas por ruta.
+ */
 @Service
 public class FlightDelayService {
 
     private final ObjectMapper objectMapper;
     private final Map<String, List<FlightDelayDTO>> delayMap = new HashMap<>();
 
+    /**
+     * Constructor que inyecta el ObjectMapper para el manejo de JSON.
+     *
+     * @param objectMapper Instancia de ObjectMapper para deserializar JSON.
+     */
     public FlightDelayService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * Método de inicialización que carga los datos de retrasos desde el archivo JSON.
+     * Se ejecuta después de la construcción del bean.
+     *
+     * @throws RuntimeException Si falla la carga del archivo JSON.
+     */
     @PostConstruct
     public void loadData() {
         try {
@@ -43,6 +58,13 @@ public class FlightDelayService {
         }
     }
 
+    /**
+     * Obtiene la lista de retrasos para una ruta específica.
+     *
+     * @param origin Código del aeropuerto de origen.
+     * @param destination Código del aeropuerto de destino.
+     * @return Lista de DTOs de retrasos para la ruta, o lista vacía si no se encuentra.
+     */
     public List<FlightDelayDTO> getDelaysByRoute(String origin, String destination) {
         String key = origin + "-" + destination;
         return delayMap.getOrDefault(key, new ArrayList<>());
