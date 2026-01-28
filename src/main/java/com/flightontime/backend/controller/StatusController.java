@@ -32,14 +32,20 @@ public class StatusController {
     private com.flightontime.backend.repository.FlightMatchRepository flightMatchRepository;
 
     // Cambiamos a POST para que TÚ le envíes los datos del vuelo
-    @PostMapping("/predict")
+    @PostMapping("/predict_old")
     /**
-     * Recibe un `Flight` en el cuerpo de la petición y devuelve el mismo objeto
-     * con la predicción de probabilidad de retraso calculada por
-     * {@link com.flightontime.backend.service.FlightService#predictDelay(Flight)}.
+     * Endpoint heredado (Legacy) para predicción simple de retrasos.
+     * <p>
+     * Utiliza el servicio
+     * {@link com.flightontime.backend.service.FlightService#predictDelay(Flight)}
+     * para calcular la probabilidad basándose únicamente en datos históricos
+     * básicos.
+     * </p>
      *
-     * @param flight objeto `Flight` con datos de entrada
-     * @return objeto `Flight` con la propiedad `delayProbability` calculada
+     * @param flight objeto {@link Flight} con datos del vuelo (origen, destino,
+     *               fecha).
+     * @return objeto {@link Flight} con la propiedad {@code delayProbability}
+     *         actualizada.
      */
     public Flight getPrediction(@RequestBody Flight flight) {
         return flightService.predictDelay(flight);
@@ -108,7 +114,31 @@ public class StatusController {
     @Autowired
     private com.flightontime.backend.service.weather.WeatherService weatherService;
 
-    @PostMapping("/predict-smart")
+    /**
+     * Predicción Inteligente ("Smart Prediction").
+     * <p>
+     * Este endpoint orquesta un flujo complejo para mejorar la precisión de la
+     * predicción:
+     * <ol>
+     * <li>Obtiene las coordenadas geográficas de los aeropuertos de origen y
+     * destino.</li>
+     * <li>Calcula la distancia geodésica del vuelo.</li>
+     * <li>Consulta el servicio meteorológico (`WeatherService`) para obtener el
+     * pronóstico real
+     * en la ubicación de salida y hora del vuelo.</li>
+     * <li>Extrae variables climáticas críticas (temperatura, lluvia, nieve, viento,
+     * código clima).</li>
+     * <li>Invoca el modelo de IA (ONNX) con todos estos factores para una
+     * predicción precisa.</li>
+     * </ol>
+     * </p>
+     *
+     * @param request {@link FlightWeatherRequest} que envuelve el vuelo y
+     *                parámetros temporales opcionales.
+     * @return objeto {@link Flight} enriquecido con la probabilidad de retraso y
+     *         distancia calculada.
+     */
+    @PostMapping("/predict")
     public Flight predictSmart(@RequestBody FlightWeatherRequest request) {
         try {
             // 1. Get origin and destination airport coordinates
@@ -208,6 +238,22 @@ public class StatusController {
         }
     }
 
+    /**
+     * Predicción directa con modelo ONNX (Manual).
+     * <p>
+     * A diferencia de {@code /predict}, este endpoint no consulta el clima en
+     * tiempo real automáticamente.
+     * Espera que los datos meteorológicos sean proporcionados en el cuerpo del
+     * request.
+     * Útil para simulaciones ("Qué pasaría si...") o cuando ya se tienen los datos
+     * del clima.
+     * </p>
+     *
+     * @param request {@link FlightWeatherRequest} que debe incluir valores manuales
+     *                para clima (temp, rain, wind, etc.).
+     * @return objeto {@link Flight} con la probabilidad de retraso calculada por el
+     *         modelo ONNX.
+     */
     @PostMapping("/predict-onnx")
     public Flight predictOnnx(@RequestBody FlightWeatherRequest request) {
         try {
@@ -238,6 +284,14 @@ public class StatusController {
         }
     }
 
+    /**
+     * DTO (Data Transfer Object) para solicitudes de predicción enriquecidas.
+     * <p>
+     * Agrupa la información del vuelo {@link Flight} junto con variables
+     * meteorológicas
+     * y temporales necesarias para los modelos de Machine Learning avanzados.
+     * </p>
+     */
     public static class FlightWeatherRequest {
         private Flight flight;
         private Double tempMax;
